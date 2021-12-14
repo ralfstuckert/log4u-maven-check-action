@@ -11,6 +11,10 @@ inputs:
     default: "."
     type: string
     required: false
+  settings-path:
+    description: "the (optional) path of the settings xml file"
+    type: string
+    required: false
     
 runs:
   using: "composite"
