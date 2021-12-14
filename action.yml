@@ -37,7 +37,7 @@ runs:
       echo "2"
       echo "$LOG4J_DEPENDENCIES" 
       echo "2.1"
-      echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j 
+      echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j || true
       echo "2.2"
       echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j || true | sed -n 's/^.*:jar:\(.*\):.*$/\1/p'
       echo "2.3"
