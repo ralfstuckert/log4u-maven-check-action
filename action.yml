@@ -11,7 +11,7 @@ runs:
   using: "composite"
   steps:
   - run: |
-      if LOG4J_DEPENDENCIES=$(mvn dependency:list -Dincludes=org.apache.logging.log4j); then echo "success"; else
+      if LOG4J_DEPENDENCIES=$(mvn dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
         echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
         exit -1;
       fi;
