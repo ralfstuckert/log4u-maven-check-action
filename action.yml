@@ -23,13 +23,13 @@ runs:
     id: settings-parameter
     shell: bash
     run: |
-      if [[ ! -z '${{ inputs.settings-path }}' ]]; then echo "::set-output name=branch::-s ${{ inputs.settings-path }}"; fi
+      if [[ ! -z '${{ inputs.settings-path }}' ]]; then echo "::set-output name=path::-s ${{ inputs.settings-path }}"; fi
 
   - name: check log4j dependencies
     shell: bash
     run: |
       cd ${{ inputs.project-root }}
-      if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.settings-path }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
+      if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.path }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
         echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
         exit -1;
       fi;
