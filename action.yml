@@ -23,7 +23,7 @@ runs:
     id: settings-parameter
     shell: bash
     run: |
-      if [[ '${{ inputs.settings-path }}' != '' ]]; then echo "::set-output name=branch::-s ${{ inputs.settings-path }}"; fi
+      if [[ ! -z '${{ inputs.settings-path }}' ]]; then echo "::set-output name=branch::-s ${{ inputs.settings-path }}"; fi
 
   - name: check log4j dependencies
     shell: bash
