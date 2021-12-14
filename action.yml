@@ -21,10 +21,12 @@ runs:
   steps:
   - name: evaluate settings parameter
     id: settings-parameter
+    shell: bash
     run: |
       if [[ '${{ inputs.settings-path }}' != '' ]]; then echo "::set-output name=branch::-s ${{ inputs.settings-path }}"; fi
 
   - name: check log4j dependencies
+    shell: bash
     run: |
       cd ${{ inputs.project-root }}
       if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.settings-parameter }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
@@ -41,4 +43,4 @@ runs:
       done;
     env:
       GITHUB_TOKEN: ${{ inputs.token }}
-    shell: bash
+
