@@ -19,7 +19,7 @@ runs:
       for version in $LOG4J_VERSIONS; do
       if [[ $version -lt '15' ]]; then
         echo 'detected vulnarable log4j version' $version;
-        echo "::error title=detected vulnarable log4j version 2.$version.x::check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+        echo "::error title=Detected vulnarable log4j version 2.$version.x::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
         exit -1;
       fi;
       done;
