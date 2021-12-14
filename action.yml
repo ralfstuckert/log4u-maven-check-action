@@ -6,12 +6,24 @@ inputs:
     required: false
     description: 'token passed as environment variable GTIHUB_TOKEN to the maven call'
     default: ${{ github.token }}
+  project-root:
+    description: "the root of the project, default is '.'"
+    default: "."
+    type: string
+    required: false
     
 runs:
   using: "composite"
   steps:
-  - run: |
-      if LOG4J_DEPENDENCIES=$(mvn dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
+  - name: evaluate settings parameter
+    id: settings-parameter
+    run: |
+      if [[ '${{ inputs.settings-path }}' != '' ]]; then echo "::set-output name=branch::-s ${{ inputs.settings-path }}"; fi
+
+  - name: check log4j dependencies
+    run: |
+      cd ${{ inputs.project-root }}
+      if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.settings-parameter }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
         echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
         exit -1;
       fi;
