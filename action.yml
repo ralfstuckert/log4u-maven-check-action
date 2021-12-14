@@ -1,0 +1,28 @@
+name: "log4u-maven-check"
+description: "Checks if a vulnerable Log4u 2 Version is contained in the dependencies of a Maven based project"
+
+inputs:
+  token:
+    required: false
+    description: 'token passed as environment variable GTIHUB_TOKEN to the maven call'
+    default: ${{ github.token }}
+    
+runs:
+  using: "composite"
+  steps:
+  - run: |
+      if LOG4J_DEPENDENCIES=$(mvn dependency:list -Dincludes=org.apache.logging.log4j); then echo "success"; else
+        echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
+        exit -1;
+      fi;
+      LOG4J_VERSIONS=$(echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j | sed -n 's/^.*:jar:2\.\([0-9]*\).*:.*$/\1/p' | tr '\n' ' ')
+      for version in $LOG4J_VERSIONS; do
+      if [[ $version -lt '15' ]]; then
+        echo 'detected vulnarable log4j version' $version;
+        echo "::error title=detected vulnarable log4j version 2.$version.x::check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+        exit -1;
+      fi;
+      done;
+    env:
+      GITHUB_TOKEN: ${{ inputs.token }}
+   
