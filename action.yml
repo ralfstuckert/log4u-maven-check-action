@@ -35,9 +35,9 @@ runs:
         exit -1;
       fi;
       echo "2"
-      echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j || true | sed -n 's/^.*:jar:\(.*\):.*$/\1/p' | tr '\n' ' ' || true
-      echo "2.4"
-      LOG4J_VERSIONS=$(echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j || true | sed -n 's/^.*:jar:\(.*\):.*$/\1/p' | tr '\n' ' ' || true)
+      if LOG4J_VERSIONS=$(echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j | sed -n 's/^.*:jar:\(.*\):.*$/\1/p' | tr '\n' ' '); then echo "success"; else
+        LOG4J_VERSIONS=
+      fi;
       echo "3"
       echo "$LOG4J_VERSIONS"
       for version in $LOG4J_VERSIONS; do
