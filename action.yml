@@ -33,13 +33,18 @@ runs:
         echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
         exit -1;
       fi;
-      LOG4J_VERSIONS=$(echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j | sed -n 's/^.*:jar:2\.\([0-9]*\).*:.*$/\1/p' | tr '\n' ' ')
+      LOG4J_VERSIONS=$(echo "$LOG4J_DEPENDENCIES" | grep org.apache.logging.log4j | sed -n 's/^.*:jar:\(.*\):.*$/\1/p' | tr '\n' ' ')
       for version in $LOG4J_VERSIONS; do
-      if [[ $version -lt '15' ]]; then
-        echo 'detected vulnarable log4j version' $version;
-        echo "::error title=Detected vulnarable log4j version 2.$version.x::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
-        exit -1;
-      fi;
+        major=$(echo $version | sed -n 's/^\([0-9]*\)\..*$/\1/p');
+        minor=$(echo $version | sed -n 's/^[0-9]*\.\([0-9]*\).*$/\1/p');
+        if [[ ($major -eq '1') ]]; then
+          echo "::warning title=Detected EOL log4j version $version, you should upgrade to at least 2.16::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+        elif [[ ($major -eq '2') && ($minor -lt '15') ]]; then
+          echo "::error title=Detected vulnarable log4j version $version, you should upgrade to at least 2.16::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+          exit -1;
+        elif [[ ($major -eq '2') && ($minor -lt '16') ]]; then
+          echo "::warning title=Detected vulnarable log4j version $version, you should upgrade to at least 2.16::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+        fi;
       done;
     env:
       GITHUB_TOKEN: ${{ inputs.token }}
