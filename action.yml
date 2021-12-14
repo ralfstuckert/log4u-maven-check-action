@@ -38,7 +38,7 @@ runs:
         major=$(echo $version | sed -n 's/^\([0-9]*\)\..*$/\1/p');
         minor=$(echo $version | sed -n 's/^[0-9]*\.\([0-9]*\).*$/\1/p');
         if [[ ($major -eq '1') ]]; then
-          echo "::warning title=Detected EOL log4j version $version::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
+          echo "::warning title=Detected EOL log4j version $version%2C you should upgrade to at least 2.16::Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
         elif [[ ($major -eq '2') && ($minor -lt '15') ]]; then
           echo "::error title=Detected vulnarable log4j version $version::You must upgrade to at least 2.15%2C2.16 recommended. Check your dependency tree 'mvn dependency:list -Dincludes=org.apache.logging.log4j'"
           exit -1;
