@@ -23,7 +23,6 @@ runs:
         exit -1;
       fi;
       done;
-    shell: bash
     env:
       GITHUB_TOKEN: ${{ inputs.token }}
-   
+    shell: bash
