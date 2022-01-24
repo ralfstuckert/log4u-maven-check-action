@@ -15,6 +15,11 @@ inputs:
     description: "the (optional) path of the settings xml file"
     type: string
     required: false
+  multi-module:
+    description: "multi-module dependencies need a compile, default ist false"
+    type: boolean
+    default: false
+    required: false
     
 runs:
   using: "composite"
@@ -24,12 +29,18 @@ runs:
     shell: bash
     run: |
       if [[ ! -z '${{ inputs.settings-path }}' ]]; then echo "::set-output name=path::-s ${{ inputs.settings-path }}"; fi
+  - name: evaluate multi-module parameter
+    if: inputs.multi-module == true
+    id: multi-module
+    shell: bash
+    run: |
+      echo "::set-output name=compile::test-compile -Dmaven.main.skip=true -Dmaven.test.skip=true"
 
   - name: check log4j dependencies
     shell: bash
     run: |
       cd ${{ inputs.project-root }}
-      if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.path }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
+      if LOG4J_DEPENDENCIES=$(mvn --file pom.xml ${{ steps.settings-parameter.outputs.path }} ${{ steps.multi-module.outputs.compile }} dependency:list -Dincludes=org.apache.logging.log4j); then echo "$LOG4J_DEPENDENCIES"; else
         echo "::error failed to check dependencies::$LOG4J_DEPENDENCIES";
         exit -1;
       fi;
