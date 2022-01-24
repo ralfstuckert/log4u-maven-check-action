@@ -30,7 +30,7 @@ runs:
     run: |
       if [[ ! -z '${{ inputs.settings-path }}' ]]; then echo "::set-output name=path::-s ${{ inputs.settings-path }}"; fi
   - name: evaluate multi-module parameter
-    if: inputs.multi-module == true
+    if: inputs.multi-module != false
     id: multi-module
     shell: bash
     run: |
