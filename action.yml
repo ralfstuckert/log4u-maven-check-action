@@ -29,7 +29,7 @@ runs:
     shell: bash
     working-directory: ${{ inputs.project-root }}
     run: |
-       if [[ ! -z $(cat pom.xml | grep "<modules>") ]]; then echo "::set-output name=compile::test-compile -Dmaven.main.skip=true -Dmaven.test.skip=true";fi
+        if [[ 1 -lt $(cat pom.xml | grep -c "<module>") ]]; then echo "::set-output name=compile::test-compile -Dmaven.main.skip=true -Dmaven.test.skip=true";fi
 
 
   - name: check log4j dependencies
